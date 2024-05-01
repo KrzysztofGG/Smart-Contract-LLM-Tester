@@ -5,10 +5,12 @@ import numpy as np
 class Parser():
 
     def __init__(self, path):
+        
         with open(path, 'r') as f:
             self.contract = f.readlines()
-            self.functions = []
-            self.semantic_vectors = []
+
+        self.functions = []
+        self.semantic_vectors = []
 
     def parse_contract_to_functions(self):
 
