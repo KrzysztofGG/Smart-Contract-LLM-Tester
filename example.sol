@@ -14,7 +14,7 @@ library IterableMapping {
         return map.values[key];
     }
 
-    function getKeyAtIndex(Map storage map, uint256 index)
+    REMOVED_FOR_TESTS_functio getKeyAtIndex(Map storage map, uint256 index)
         public
         view
         returns (address)

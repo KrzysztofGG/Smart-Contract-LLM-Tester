@@ -1,6 +1,8 @@
 from transformers import AutoTokenizer, AutoModel
 import torch
 import numpy as np
+import os
+import json
 
 class Parser():
 
@@ -11,6 +13,8 @@ class Parser():
 
         self.functions = []
         self.semantic_vectors = []
+        self.output_dir = 'parsed_contracts'
+        self.contract_name = path[:-4]
 
     def parse_contract_to_functions(self):
 
@@ -44,9 +48,10 @@ class Parser():
         model = AutoModel.from_pretrained("microsoft/codebert-base")
 
         for input_text in self.functions:
-            self.get_vectors_from_input(tokenizer, model, input_text)
+            self.get_vector_from_input(tokenizer, model, input_text)
 
         self.semantic_vectors_whitening()
+        # self.save_functions_and_vectors()
 
     def get_vector_from_input(self, tokenizer, model, input_text):
         input_ids = tokenizer.encode(input_text, return_tensors="pt", 
@@ -54,10 +59,9 @@ class Parser():
         with torch.no_grad():
             outputs = model(input_ids)
             semantic_vector = outputs.last_hidden_state.mean(dim=1) 
-            self.semantic_vectors.append(semantic_vector)
+            self.semantic_vectors.append(semantic_vector.squeeze().numpy())
 
     def semantic_vectors_whitening(self):
-
         vectors = np.asarray(self.semantic_vectors)
         covariance_matrix = np.cov(vectors, rowvar=False)
         eigenvalues, eigenvectors = np.linalg.eigh(covariance_matrix)
@@ -70,7 +74,24 @@ class Parser():
         normalized_whitened_vectors = (whitened_vectors - mean) / std
         self.semantic_vectors = normalized_whitened_vectors
 
+    def save_functions_and_vectors(self):
+        if not os.path.exists(os.path.join(self.output_dir, self.contract_name, 'functions')):
+            os.makedirs(os.path.join(self.output_dir, self.contract_name, 'functions'))
+
+        if not os.path.exists(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors')):
+            os.makedirs(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors'))
+        
+        for i, (fun, vec) in enumerate(zip(self.functions, self.semantic_vectors)):
+            
+            with open(os.path.join(self.output_dir, self.contract_name, 'functions', f'{i}.txt'), 'w+')  as f:
+                f.write(fun)
+
+            with open(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors', f'{i}.txt'), 'w+') as f:
+                json.dump(vec.tolist(), f)
+
 
 
 parser = Parser('example.sol')
 parser.parse_contract_to_functions()
+parser.get_semantic_vectors()
+parser.save_functions_and_vectors()
