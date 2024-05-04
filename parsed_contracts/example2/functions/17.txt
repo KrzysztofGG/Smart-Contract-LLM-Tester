@@ -1,0 +1,4 @@
+    function removeLimits() external onlyOwner {
+        maxTxAmount = _totalSupply;
+        maxWalletAmount = _totalSupply;
+    }

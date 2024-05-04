@@ -1,0 +1,4 @@
+    function changeMaxTx(uint256 newMaxTx) public onlyOwner {
+        require(newMaxTx < 99, "Max Tx cannot be above 99%");
+        maxTxAmount = newMaxTx * tenthPercent;
+    }

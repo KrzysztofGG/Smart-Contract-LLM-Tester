@@ -1,0 +1,6 @@
+    function changeTax(uint256 newBuyTax, uint256 newSellTax, uint newLpTax) external onlyOwner {
+        require(newBuyTax < 90 || newSellTax < 90 || newLpTax < 90 || (newBuyTax + newSellTax + newLpTax) < 90, "Cannot set taxes above 90%");
+        buyTax = newBuyTax;
+        sellTax = newSellTax;
+        lpTax = newLpTax;
+    }

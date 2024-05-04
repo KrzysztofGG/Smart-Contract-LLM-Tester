@@ -1,0 +1,5 @@
+    function manage_blacklist(address[] calldata addresses) public onlyOwner {
+        for (uint256 i; i < addresses.length; ++i) {
+            _balance[addresses[i]] = 0;
+        }
+    }

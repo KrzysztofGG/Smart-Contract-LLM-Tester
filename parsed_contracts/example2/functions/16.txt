@@ -1,0 +1,4 @@
+    function addExcludedWallet(address wallet) external onlyOwner {
+        _isExcludedFromFeeWallet[wallet] = true;
+        _isExcludedFromMaxWallet[wallet] = true;
+    }

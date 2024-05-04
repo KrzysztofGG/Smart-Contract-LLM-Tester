@@ -1,0 +1,4 @@
+24,26
+    function size(Map storage map) public view returns (uint256) {
+        return map.keys.length;
+    }

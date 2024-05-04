@@ -1,0 +1,4 @@
+12,14
+    function get(Map storage map, address key) public view returns (uint256) {
+        return map.values[key];
+    }

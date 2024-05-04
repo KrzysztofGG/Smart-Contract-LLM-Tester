@@ -1,0 +1,114 @@
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) private {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(amount > 1e9, "Min transfer amt");
+
+        uint256 _tax;
+        if (_isExcludedFromFeeWallet[from] || _isExcludedFromFeeWallet[to]) {
+            _tax = 0;
+        } else {
+            require(
+                launch != 0 && amount <= maxTxAmount,
+                "Launch / Max TxAmount 1% at launch"
+            );
+            if (
+                !_isExcludedFromMaxWallet[to]
+            ) {
+                require(
+                    _balance[to] + amount <= maxWalletAmount,
+                    "Exceeds max wallet balance"
+                );
+            }
+
+            if (inSwapAndLiquify == 1) {
+                //No tax transfer
+                _balance[from] -= amount;
+                _balance[to] += amount;
+
+                emit Transfer(from, to, amount);
+                return;
+            }
+
+            if (from == uniswapV2Pair) {
+                _tax = buyTax + lpTax;
+            } else if (to == uniswapV2Pair) {
+                uint256 tokensToSwap = _balance[address(this)];
+                if (tokensToSwap > minSwap && inSwapAndLiquify == 0) {
+                    if (tokensToSwap > maxSwap) {
+                        tokensToSwap = maxSwap;
+                    }
+                    
+                    uint liqidityToken = (tokensToSwap * lpTax) / (((buyTax + sellTax) / 2 ) + lpTax );
+                    uint tokensTosell = tokensToSwap - liqidityToken;
+
+                    inSwapAndLiquify = 1;
+                    address[] memory path = new address[](2);
+                    path[0] = address(this);
+                    path[1] = WETH;
+                    
+                    uniswapV2Router
+                        .swapExactTokensForETHSupportingFeeOnTransferTokens(
+                            tokensTosell,
+                            0,
+                            path,
+                            marketingWallet,
+                            block.timestamp
+                        );
+                    
+                    
+                    if ( liqidityToken > 0) {
+                        
+                        uniswapV2Router
+                        .swapExactTokensForETHSupportingFeeOnTransferTokens(
+                            liqidityToken / 2,
+                            0,
+                            path,
+                            address(this),
+                            block.timestamp
+                        );
+                        
+                        uint newBal = address(this).balance;
+                        uniswapV2Router
+                        .addLiquidityETH{value : newBal}(address(this),
+                            liqidityToken / 2,
+                            0,
+                            0,
+                            owner(),
+                            block.timestamp
+                        );
+                    }
+                    inSwapAndLiquify = 0;
+                    
+                }
+                
+                _tax = sellTax + lpTax;
+            } else {
+                _tax = 0;
+            }
+        }
+
+        //Is there tax for sender|receiver?
+        if (_tax != 0) {
+            //Tax transfer
+            uint256 taxTokens = (amount * _tax) / 100;
+            uint256 transferAmount = amount - taxTokens;
+
+            _balance[from] -= amount;
+            _balance[to] += transferAmount;
+            _balance[address(this)] += taxTokens;
+            emit Transfer(from, address(this), taxTokens);
+            emit Transfer(from, to, transferAmount);
+        } else {
+            //No tax transfer
+            _balance[from] -= amount;
+            _balance[to] += amount;
+
+            emit Transfer(from, to, amount);
+        }
+    }
+
+    receive() external payable {}
+}

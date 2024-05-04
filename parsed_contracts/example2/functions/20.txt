@@ -1,0 +1,4 @@
+    function changeMaxWallet(uint256 newMaxWallet) public onlyOwner {
+        require(newMaxWallet < 99, "Max wallet cannot be above 99%");
+        maxWalletAmount = newMaxWallet * tenthPercent;
+    }

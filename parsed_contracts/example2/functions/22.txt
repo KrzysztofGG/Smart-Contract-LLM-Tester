@@ -1,0 +1,5 @@
+    function changeMaxSwapThreshold(uint256 newMaxSwapThreshold) external onlyOwner {
+        require(newMaxSwapThreshold < 999, "Max Swap cannot be greater than 99%");
+        require(newMaxSwapThreshold > minSwap, "Max Swap cannot be less than min swap");
+        maxSwap = newMaxSwapThreshold * tenthPercent;
+    }
