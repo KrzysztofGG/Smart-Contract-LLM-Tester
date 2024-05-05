@@ -1,4 +1,4 @@
-    function renounceOwnership() public virtual onlyOwner {
-        emit OwnershipTransferred(_owner, address(0));
-        _owner = address(0);
+54,56
+    function totalSupply() public view returns (uint256) {
+        return tokenTotalSupply;
     }

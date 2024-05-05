@@ -1,21 +1,4 @@
-    function swapExactTokensForETHSupportingFeeOnTransferTokens(
-        uint256 amountIn,
-        uint256 amountOutMin,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    ) external;
-
-    function addLiquidityETH(
-        address token,
-        uint amountTokenDesired,
-        uint amountTokenMin,
-        uint amountETHMin,
-        address to,
-        uint deadline
-    ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
-
-    function factory() external pure returns (address);
-
-    function WETH() external pure returns (address);
-}
+62,64
+    function balanceOf(address account) public view returns (uint256) {
+        return _balances[account];
+    }

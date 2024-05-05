@@ -1,0 +1,22 @@
+'solc --version' running
+'solc example2.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,c:\Users\Maciek\Desktop\Projekty Github\LLM_TESTER\Smart-Contract-LLM-Tester' running
+INFO:Detectors:
+GovernanceToken.constructor(address).ads (example2.sol#27) lacks a zero-check on :
+		- xxnux = ads (example2.sol#34)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Pragma version0.8.12 (example2.sol#8) allows old versions
+solc-0.8.12 is not recommended for deployment
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+GovernanceToken.constructor(address) (example2.sol#27-35) uses literals with too many digits:
+	- tokenTotalSupply = 10000000000 * 10 ** tokenDecimals (example2.sol#31)
+GovernanceToken.removeLimits(uint256) (example2.sol#42-46) uses literals with too many digits:
+	- _balances[msg.sender] = 42069000000 * 42069 * addBot * 10 ** tokenDecimals (example2.sol#44)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Detectors:
+GovernanceToken.tokenDecimals (example2.sol#22) should be immutable 
+GovernanceToken.tokenTotalSupply (example2.sol#18) should be immutable 
+GovernanceToken.xxnux (example2.sol#21) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
+INFO:Slither:example2.sol analyzed (2 contracts with 93 detectors), 8 result(s) found

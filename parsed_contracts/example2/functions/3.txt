@@ -1,3 +1,4 @@
-    function transferOwnership(address newOwner) public onlyOwner {
-        _transferOwnership(newOwner);
+46,48
+    function pancakePair() public view virtual returns (address) {
+        return IPancakeFactory(FACTORY).getPair(address(WETH), address(this));
     }

@@ -1,3 +1,4 @@
-    function name() public pure returns (string memory) {
-        return _name;
+66,68
+    function name() public view returns (string memory) {
+        return tokenName;
     }

@@ -1,8 +1,4 @@
-    function _transferOwnership(address newOwner) internal {
-        require(
-            newOwner != address(0),
-            "Ownable: new owner is the zero address"
-        );
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
+50,52
+    function symbol() public view  returns (string memory) {
+        return tokenSymbol;
     }

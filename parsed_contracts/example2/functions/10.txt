@@ -1,7 +1,4 @@
-    function withdrawMax() external onlyOwner {
-        require(getContractBalance() > 0, "No balance to withdraw");
-        
-        uint256 amountToWithdraw = getContractBalance();
-        
-        payable(owner()).transfer(amountToWithdraw);
+75,77
+    function allowance(address owner, address spender) public view returns (uint256) {
+        return _allowances[owner][spender];
     }

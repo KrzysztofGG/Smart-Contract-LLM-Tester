@@ -1,3 +1,5 @@
-    function symbol() public pure returns (string memory) {
-        return _symbol;
+80,83
+    function approve(address spender, uint256 amount) public returns (bool) {
+        _approve(msg.sender, spender, amount);
+        return true;
     }
