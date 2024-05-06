@@ -3,6 +3,7 @@ import torch
 import numpy as np
 import os
 import json
+import subprocess
 
 class Parser():
 
@@ -11,23 +12,45 @@ class Parser():
         with open(path, 'r') as f:
             self.contract = f.readlines()
 
+        self.path=path
         self.functions = []
         self.semantic_vectors = []
         self.output_dir = 'parsed_contracts'
         self.contract_name = path[:-4]
+        self.slither_output=""
+        self.echidna_output=""
 
     def parse_contract_to_functions(self):
 
         curr_fun = ''
         reading_function = False
+        reading_header = False
         bracket_balance = None
 
         for line in self.contract:
             if 'function' in line:
+                
+                if line.strip()[-1] == ';': #skips functions that are only declared, not defined (interface)
+                    continue
+
                 curr_fun += line
-                bracket_balance = 1
+
+                if line.strip()[-1] == '{':
+                    bracket_balance = 1
+                else:
+                    reading_header = True
+                    bracket_balance = 0
                 reading_function = True
+
             elif reading_function:
+
+                if reading_header:
+                    if ')' in line:
+                        reading_header = False
+                    else:
+                        curr_fun += line
+                        continue
+
                 left_bracket = line.count('{')
                 right_bracket = line.count('}')
 
@@ -74,13 +97,34 @@ class Parser():
         normalized_whitened_vectors = (whitened_vectors - mean) / std
         self.semantic_vectors = normalized_whitened_vectors
 
-    def save_functions_and_vectors(self):
-        if not os.path.exists(os.path.join(self.output_dir, self.contract_name, 'functions')):
-            os.makedirs(os.path.join(self.output_dir, self.contract_name, 'functions'))
+    def get_slither_tests(self):
+        result = subprocess.run(['slither', self.path], 
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        output=result.stderr.decode('cp1252')
+        self.slither_output=output
+    
+    def get_echidna_tests(self):
+        result = subprocess.run(['echidna',self.path], 
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE)
+        output=result.stderr.decode()
+        self.echidna_output=output
 
-        if not os.path.exists(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors')):
-            os.makedirs(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors'))
+    def save_tests(self):  
+        # if not os.path.exists(os.path.join(self.output_dir, self.contract_name, 'test_outputs')):
+        #     os.makedirs(os.path.join(self.output_dir, self.contract_name, 'test_outputs')) 
+        self.prepare_dir('test_outputs')
         
+        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'w+')  as f:
+            f.write(self.slither_output)
+        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'echidna.txt'), 'w+')  as f:
+            f.write(self.echidna_output)
+
+    def save_functions_and_vectors(self):
+        self.prepare_dir('functions')
+        self.prepare_dir('semantic_vectors')
+
         for i, (fun, vec) in enumerate(zip(self.functions, self.semantic_vectors)):
             
             with open(os.path.join(self.output_dir, self.contract_name, 'functions', f'{i}.txt'), 'w+')  as f:
@@ -88,10 +132,23 @@ class Parser():
 
             with open(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors', f'{i}.txt'), 'w+') as f:
                 json.dump(vec.tolist(), f)
+        
+    
+    def prepare_dir(self, dir_name):
+        if not os.path.exists(os.path.join(self.output_dir, self.contract_name, dir_name)):
+            os.makedirs(os.path.join(self.output_dir, self.contract_name, dir_name))
+        else:
+            for filename in os.listdir(os.path.join(self.output_dir, self.contract_name, dir_name)):
+                file_path = os.path.join(dir_name, filename)
+                try: 
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                except Exception as e:
+                    print(f"Failed to delete {file_path}: {e}")
 
 
 
-parser = Parser('example.sol')
+parser = Parser('example2.sol')
 parser.parse_contract_to_functions()
 parser.get_semantic_vectors()
 parser.save_functions_and_vectors()
