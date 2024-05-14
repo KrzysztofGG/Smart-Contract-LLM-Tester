@@ -4,6 +4,9 @@ import numpy as np
 import os
 import json
 import subprocess
+import logging
+
+logging.getLogger().setLevel(logging.INFO)
 
 class Parser():
 
@@ -21,7 +24,7 @@ class Parser():
         self.echidna_output=""
 
     def parse_contract_to_functions(self):
-
+        logging.info(f'Parsing contract {self.contract_name} to functions')
         curr_fun = ''
         reading_function = False
         reading_header = False
@@ -67,6 +70,7 @@ class Parser():
                     reading_function = False
 
     def get_semantic_vectors(self):
+        logging.info(f'Creating semantic vectors for contract {self.contract_name}')
         tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
         model = AutoModel.from_pretrained("microsoft/codebert-base")
 
@@ -85,6 +89,7 @@ class Parser():
             self.semantic_vectors.append(semantic_vector.squeeze().numpy())
 
     def semantic_vectors_whitening(self):
+        logging.info(f'Whitening semantic vectors for contract {self.contract_name}')
         vectors = np.asarray(self.semantic_vectors)
         covariance_matrix = np.cov(vectors, rowvar=False)
         eigenvalues, eigenvectors = np.linalg.eigh(covariance_matrix)
@@ -112,8 +117,6 @@ class Parser():
         self.echidna_output=output
 
     def save_tests(self):  
-        # if not os.path.exists(os.path.join(self.output_dir, self.contract_name, 'test_outputs')):
-        #     os.makedirs(os.path.join(self.output_dir, self.contract_name, 'test_outputs')) 
         self.prepare_dir('test_outputs')
         
         with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'w+')  as f:
@@ -122,6 +125,7 @@ class Parser():
             f.write(self.echidna_output)
 
     def save_functions_and_vectors(self):
+        logging.info(f'Saving functions and vectors for contract {self.contract_name}')
         self.prepare_dir('functions')
         self.prepare_dir('semantic_vectors')
 
@@ -148,7 +152,7 @@ class Parser():
 
 
 
-parser = Parser('example2.sol')
-parser.parse_contract_to_functions()
-parser.get_semantic_vectors()
-parser.save_functions_and_vectors()
+# parser = Parser('example2.sol')
+# parser.parse_contract_to_functions()
+# parser.get_semantic_vectors()
+# parser.save_functions_and_vectors()
