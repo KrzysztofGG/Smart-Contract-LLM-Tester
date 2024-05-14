@@ -1,5 +1,4 @@
-    function manage_blacklist(address[] calldata addresses) public onlyOwner {
-        for (uint256 i; i < addresses.length; ++i) {
-            _balance[addresses[i]] = 0;
-        }
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        _approve(_msgSender(), spender, amount);
+        return true;
     }

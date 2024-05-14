@@ -1,3 +1,3 @@
-    function totalSupply() public pure override returns (uint256) {
-        return _totalSupply;
+    function symbol() public pure returns (string memory) {
+        return _symbol;
     }

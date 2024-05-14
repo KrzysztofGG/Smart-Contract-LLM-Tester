@@ -1,1 +1,0 @@
-echidna: Constructor arguments are required: [("ads",address)]

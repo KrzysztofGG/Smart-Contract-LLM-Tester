@@ -1,4 +1,3 @@
-66,68
-    function name() public view returns (string memory) {
-        return tokenName;
+    function owner() public view returns (address) {
+        return _owner;
     }

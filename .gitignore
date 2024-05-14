@@ -1,2 +1,4 @@
-parsed_contracts/
+parsed_contracts\
 *.txt
+
+./crytic-export

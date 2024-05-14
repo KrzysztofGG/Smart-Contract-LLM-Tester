@@ -1,4 +1,2 @@
-75,77
-    function allowance(address owner, address spender) public view returns (uint256) {
-        return _allowances[owner][spender];
-    }
+    function createPair(address tokenA, address tokenB) external returns (address pair);
+}

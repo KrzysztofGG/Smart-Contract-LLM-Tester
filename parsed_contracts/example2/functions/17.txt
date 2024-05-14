@@ -1,4 +1,4 @@
-    function removeLimits() external onlyOwner {
-        maxTxAmount = _totalSupply;
-        maxWalletAmount = _totalSupply;
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        _transfer(_msgSender(), recipient, amount);
+        return true;
     }

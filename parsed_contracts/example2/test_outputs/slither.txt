@@ -1,22 +1,171 @@
 'solc --version' running
 'solc example2.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,c:\Users\Maciek\Desktop\Projekty Github\LLM_TESTER\Smart-Contract-LLM-Tester' running
 INFO:Detectors:
-GovernanceToken.constructor(address).ads (example2.sol#27) lacks a zero-check on :
-		- xxnux = ads (example2.sol#34)
-Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+META.sendETHToFee(uint256) (example2.sol#304-306) sends eth to arbitrary user
+	Dangerous calls:
+	- _taxWallet.transfer(amount) (example2.sol#305)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#functions-that-send-ether-to-arbitrary-destinations
 INFO:Detectors:
-Pragma version0.8.12 (example2.sol#8) allows old versions
+Reentrancy in META._transfer(address,address,uint256) (example2.sol#223-272):
+	External calls:
+	- swapTokensForEth(min(amount,min(contractTokenBalance,_maxTaxSwap))) (example2.sol#255)
+		- uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp) (example2.sol#284-290)
+	External calls sending eth:
+	- sendETHToFee(address(this).balance) (example2.sol#258)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+	State variables written after the call(s):
+	- _balances[address(this)] = _balances[address(this)].add(taxAmount) (example2.sol#266)
+	META._balances (example2.sol#126) can be used in cross function reentrancies:
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- META.balanceOf(address) (example2.sol#192-194)
+	- META.constructor() (example2.sol#166-174)
+	- _balances[from] = _balances[from].sub(amount) (example2.sol#269)
+	META._balances (example2.sol#126) can be used in cross function reentrancies:
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- META.balanceOf(address) (example2.sol#192-194)
+	- META.constructor() (example2.sol#166-174)
+	- _balances[to] = _balances[to].add(amount.sub(taxAmount)) (example2.sol#270)
+	META._balances (example2.sol#126) can be used in cross function reentrancies:
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- META.balanceOf(address) (example2.sol#192-194)
+	- META.constructor() (example2.sol#166-174)
+	- lastSellBlock = block.number (example2.sol#261)
+	META.lastSellBlock (example2.sol#157) can be used in cross function reentrancies:
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- sellCount ++ (example2.sol#260)
+	META.sellCount (example2.sol#156) can be used in cross function reentrancies:
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+Reentrancy in META.openTrading() (example2.sol#324-333):
+	External calls:
+	- uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(address(this),uniswapV2Router.WETH()) (example2.sol#328)
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	- IERC20(uniswapV2Pair).approve(address(uniswapV2Router),type()(uint256).max) (example2.sol#330)
+	External calls sending eth:
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	State variables written after the call(s):
+	- tradingOpen = true (example2.sol#332)
+	META.tradingOpen (example2.sol#153) can be used in cross function reentrancies:
+	- META.openTrading() (example2.sol#324-333)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities
+INFO:Detectors:
+META.openTrading() (example2.sol#324-333) ignores return value by uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+META.openTrading() (example2.sol#324-333) ignores return value by IERC20(uniswapV2Pair).approve(address(uniswapV2Router),type()(uint256).max) (example2.sol#330)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return
+INFO:Detectors:
+META.allowance(address,address).owner (example2.sol#201) shadows:
+	- Ownable.owner() (example2.sol#84-86) (function)
+META._approve(address,address,uint256).owner (example2.sol#216) shadows:
+	- Ownable.owner() (example2.sol#84-86) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing
+INFO:Detectors:
+Reentrancy in META.openTrading() (example2.sol#324-333):
+	External calls:
+	- uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(address(this),uniswapV2Router.WETH()) (example2.sol#328)
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	- IERC20(uniswapV2Pair).approve(address(uniswapV2Router),type()(uint256).max) (example2.sol#330)
+	External calls sending eth:
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	State variables written after the call(s):
+	- swapEnabled = true (example2.sol#331)
+Reentrancy in META.transferFrom(address,address,uint256) (example2.sol#210-214):
+	External calls:
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+		- uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp) (example2.sol#284-290)
+	External calls sending eth:
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+	State variables written after the call(s):
+	- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+		- _allowances[owner][spender] = amount (example2.sol#219)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+INFO:Detectors:
+Reentrancy in META._transfer(address,address,uint256) (example2.sol#223-272):
+	External calls:
+	- swapTokensForEth(min(amount,min(contractTokenBalance,_maxTaxSwap))) (example2.sol#255)
+		- uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp) (example2.sol#284-290)
+	External calls sending eth:
+	- sendETHToFee(address(this).balance) (example2.sol#258)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+	Event emitted after the call(s):
+	- Transfer(from,address(this),taxAmount) (example2.sol#267)
+	- Transfer(from,to,amount.sub(taxAmount)) (example2.sol#271)
+Reentrancy in META.transferFrom(address,address,uint256) (example2.sol#210-214):
+	External calls:
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+		- uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp) (example2.sol#284-290)
+	External calls sending eth:
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+	Event emitted after the call(s):
+	- Approval(owner,spender,amount) (example2.sol#220)
+		- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+INFO:Detectors:
+META._transfer(address,address,uint256) (example2.sol#223-272) has a high cyclomatic complexity (13).
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#cyclomatic-complexity
+INFO:Detectors:
+Pragma version0.8.12 (example2.sol#17) allows old versions
 solc-0.8.12 is not recommended for deployment
 Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
 INFO:Detectors:
-GovernanceToken.constructor(address) (example2.sol#27-35) uses literals with too many digits:
-	- tokenTotalSupply = 10000000000 * 10 ** tokenDecimals (example2.sol#31)
-GovernanceToken.removeLimits(uint256) (example2.sol#42-46) uses literals with too many digits:
-	- _balances[msg.sender] = 42069000000 * 42069 * addBot * 10 ** tokenDecimals (example2.sol#44)
+Function IUniswapV2Router02.WETH() (example2.sol#113) is not in mixedCase
+Parameter META.reduceFee(uint256)._newFee (example2.sol#336) is not in mixedCase
+Constant META._decimals (example2.sol#142) is not in UPPER_CASE_WITH_UNDERSCORES
+Constant META._tTotal (example2.sol#143) is not in UPPER_CASE_WITH_UNDERSCORES
+Constant META._name (example2.sol#144) is not in UPPER_CASE_WITH_UNDERSCORES
+Constant META._symbol (example2.sol#145) is not in UPPER_CASE_WITH_UNDERSCORES
+Variable META._maxTxAmount (example2.sol#146) is not in mixedCase
+Variable META._maxWalletSize (example2.sol#147) is not in mixedCase
+Variable META._taxSwapThreshold (example2.sol#148) is not in mixedCase
+Variable META._maxTaxSwap (example2.sol#149) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+Reentrancy in META._transfer(address,address,uint256) (example2.sol#223-272):
+	External calls:
+	- sendETHToFee(address(this).balance) (example2.sol#258)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+	State variables written after the call(s):
+	- _balances[address(this)] = _balances[address(this)].add(taxAmount) (example2.sol#266)
+	- _balances[from] = _balances[from].sub(amount) (example2.sol#269)
+	- _balances[to] = _balances[to].add(amount.sub(taxAmount)) (example2.sol#270)
+	- lastSellBlock = block.number (example2.sol#261)
+	- sellCount ++ (example2.sol#260)
+	Event emitted after the call(s):
+	- Transfer(from,address(this),taxAmount) (example2.sol#267)
+	- Transfer(from,to,amount.sub(taxAmount)) (example2.sol#271)
+Reentrancy in META.transferFrom(address,address,uint256) (example2.sol#210-214):
+	External calls:
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+	State variables written after the call(s):
+	- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+		- _allowances[owner][spender] = amount (example2.sol#219)
+	Event emitted after the call(s):
+	- Approval(owner,spender,amount) (example2.sol#220)
+		- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+	- _maxTxAmount = 8427600000000 * 10 ** _decimals (example2.sol#146)
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+	- _maxWalletSize = 8427600000000 * 10 ** _decimals (example2.sol#147)
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+	- _taxSwapThreshold = 4206900000000 * 10 ** _decimals (example2.sol#148)
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+	- _maxTaxSwap = 4213800000000 * 10 ** _decimals (example2.sol#149)
+META.slitherConstructorConstantVariables() (example2.sol#124-357) uses literals with too many digits:
+	- _tTotal = 420690000000000 * 10 ** _decimals (example2.sol#143)
 Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
 INFO:Detectors:
-GovernanceToken.tokenDecimals (example2.sol#22) should be immutable 
-GovernanceToken.tokenTotalSupply (example2.sol#18) should be immutable 
-GovernanceToken.xxnux (example2.sol#21) should be immutable 
+META._initialBuyTax (example2.sol#132) should be constant 
+META._initialSellTax (example2.sol#133) should be constant 
+META._maxTaxSwap (example2.sol#149) should be constant 
+META._preventSwapBefore (example2.sol#138) should be constant 
+META._reduceBuyTaxAt (example2.sol#136) should be constant 
+META._reduceSellTaxAt (example2.sol#137) should be constant 
+META._taxSwapThreshold (example2.sol#148) should be constant 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant
+INFO:Detectors:
+META._taxWallet (example2.sol#130) should be immutable 
 Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
-INFO:Slither:example2.sol analyzed (2 contracts with 93 detectors), 8 result(s) found
+INFO:Slither:example2.sol analyzed (7 contracts with 93 detectors), 39 result(s) found

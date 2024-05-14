@@ -1,5 +1,3 @@
-    function changeMinSwapThreshold(uint256 newMinSwapThreshold) external onlyOwner {
-        require(newMinSwapThreshold < 999, "Min Swap cannot be greater than 99%");
-        require(newMinSwapThreshold < maxSwap, "Min Swap cannot be greater than max swap");
-        minSwap = newMinSwapThreshold * tenthPercent;
+    function min(uint256 a, uint256 b) private pure returns (uint256){
+      return (a>b)?b:a;
     }

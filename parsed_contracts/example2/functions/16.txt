@@ -1,4 +1,3 @@
-    function addExcludedWallet(address wallet) external onlyOwner {
-        _isExcludedFromFeeWallet[wallet] = true;
-        _isExcludedFromMaxWallet[wallet] = true;
+    function balanceOf(address account) public view override returns (uint256) {
+        return _balances[account];
     }
