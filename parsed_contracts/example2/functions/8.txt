@@ -1,3 +1,4 @@
-    function owner() public view returns (address) {
-        return _owner;
+    function renounceOwnership() public virtual onlyOwner {
+        emit OwnershipTransferred(_owner, address(0));
+        _owner = address(0);
     }

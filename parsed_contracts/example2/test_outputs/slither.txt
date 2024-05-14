@@ -1,5 +1,5 @@
 'solc --version' running
-'solc example2.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,c:\Users\Maciek\Desktop\Projekty Github\LLM_TESTER\Smart-Contract-LLM-Tester' running
+'solc example2.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,C:\Users\Maciek\Desktop\Projekty Github\LLM_TESTER\Smart-Contract-LLM-Tester' running
 INFO:Detectors:
 META.sendETHToFee(uint256) (example2.sol#304-306) sends eth to arbitrary user
 	Dangerous calls:

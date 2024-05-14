@@ -6,7 +6,7 @@ import json
 import subprocess
 import logging
 import pickle
-
+import re
 logging.getLogger().setLevel(logging.INFO)
 
 class Parser():
@@ -30,10 +30,11 @@ class Parser():
         reading_function = False
         reading_header = False
         bracket_balance = None
-
-        for line in self.contract:
+        first_line=0
+        end_line=0
+        for index,line in enumerate(self.contract):
             if 'function' in line:
-                
+                first_line=index
                 if line.strip()[-1] == ';': #skips functions that are only declared, not defined (interface)
                     continue
 
@@ -63,8 +64,8 @@ class Parser():
 
                 curr_fun += line
                 if bracket_balance == 0:
-
-                    self.functions.append(curr_fun)
+                    end_line=index
+                    self.functions.append([curr_fun,first_line,end_line,''])
                     curr_fun = ''
 
                     bracket_balance = None
@@ -76,7 +77,7 @@ class Parser():
         model = AutoModel.from_pretrained("microsoft/codebert-base")
 
         for input_text in self.functions:
-            self.get_vector_from_input(tokenizer, model, input_text)
+            self.get_vector_from_input(tokenizer, model, input_text[0])
 
         self.semantic_vectors_whitening()
         # self.save_functions_and_vectors()
@@ -118,26 +119,70 @@ class Parser():
         self.echidna_output=output
 
     def save_tests(self):  
-        self.prepare_dir('test_outputs')
+        self.prepare_dir('slither_outputs')
         
-        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'w+')  as f:
+        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'slither.txt'), 'w+')  as f:
             f.write(self.slither_output)
-        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'echidna.txt'), 'w+')  as f:
+        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'echidna.txt'), 'w+')  as f:
             f.write(self.echidna_output)
 
     def save_functions_and_vectors(self):
         logging.info(f'Saving functions and vectors for contract {self.contract_name}')
         self.prepare_dir('functions')
         self.prepare_dir('semantic_vectors')
+        self.prepare_dir('tests')
 
         for i, (fun, vec) in enumerate(zip(self.functions, self.semantic_vectors)):
             
             with open(os.path.join(self.output_dir, self.contract_name, 'functions', f'{i}.txt'), 'w+')  as f:
-                f.write(fun)
+                f.write(fun[0])
 
             with open(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors', f'{i}.pkl'), 'wb+') as f:
                 pickle.dump(vec, f)
-        
+            if fun[3]!='':
+                with open(os.path.join(self.output_dir, self.contract_name, 'tests', f'{i}.txt'), 'w+')  as f:
+                    f.write(fun[3])
+    def parse_slither_to_functions(self):
+        self.get_slither_tests()
+        self.save_tests()
+        found_lines = ''
+        inside_block=False
+        mean=0
+
+
+        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'r+')  as file:
+            for line in file:
+                function_match = re.match(r'.*\((' + re.escape(self.contract_name+".sol") + r'#.*?)\)', line)
+
+                if function_match and not inside_block:
+                    inside_block=True
+                    file_reference = function_match.group(1)
+                    
+                    
+                    if '-' in file_reference.split('#')[1]:
+                        numbers = re.findall(r'\d+', file_reference.split('#')[1])
+                        num1 = int(numbers[0])
+                        num2 = int(numbers[1])
+                        mean = (num1 + num2) / 2
+                        
+                        
+                    else:
+                        mean = int(re.findall(r'\d+', file_reference.split('#')[1])[0])     
+                        
+                    found_lines+=line
+                    
+                elif inside_block and  line.startswith("   "):
+                    found_lines+=line      
+                elif inside_block and not  line.startswith("   "):
+                    inside_block=False 
+                    for function in self.functions:
+                        start=function[1]
+                        end=function[2]
+                        if  start <= mean <=end:
+                            function[3]+=found_lines
+                            print(function)
+                    found_lines=''
+                    mean=0     
     
     def prepare_dir(self, dir_name):
         if not os.path.exists(os.path.join(self.output_dir, self.contract_name, dir_name)):
@@ -153,7 +198,8 @@ class Parser():
 
 
 
-parser = Parser('example.sol')
+parser = Parser('example2.sol')
 parser.parse_contract_to_functions()
 parser.get_semantic_vectors()
+parser.parse_slither_to_functions()
 parser.save_functions_and_vectors()
