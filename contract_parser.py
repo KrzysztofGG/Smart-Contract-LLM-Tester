@@ -5,6 +5,7 @@ import os
 import json
 import subprocess
 import logging
+import pickle
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -134,8 +135,8 @@ class Parser():
             with open(os.path.join(self.output_dir, self.contract_name, 'functions', f'{i}.txt'), 'w+')  as f:
                 f.write(fun)
 
-            with open(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors', f'{i}.txt'), 'w+') as f:
-                json.dump(vec.tolist(), f)
+            with open(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors', f'{i}.pkl'), 'wb+') as f:
+                pickle.dump(vec, f)
         
     
     def prepare_dir(self, dir_name):
@@ -152,7 +153,7 @@ class Parser():
 
 
 
-# parser = Parser('example2.sol')
-# parser.parse_contract_to_functions()
-# parser.get_semantic_vectors()
-# parser.save_functions_and_vectors()
+parser = Parser('example.sol')
+parser.parse_contract_to_functions()
+parser.get_semantic_vectors()
+parser.save_functions_and_vectors()
