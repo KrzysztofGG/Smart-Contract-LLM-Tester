@@ -1,0 +1,7 @@
+Find possible vulnerabilities in a smart contract function
+written in solidity and passed in format:
+<test_function> function data </test_function>
+To make the task easier I will give you top 3 similar functions
+with knows vulnerabilities in format:
+<function> function data </function>
+<vulnerability> vulnerability data </vulnerability>
