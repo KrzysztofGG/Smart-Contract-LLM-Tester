@@ -8,17 +8,20 @@ class Resolver():
         self.parser = Parser(path)
         self.parser.parse_contract_to_functions()
         self.parser.get_semantic_vectors()
+        self.parser.parse_slither_to_functions()
         self.all_functions = []
         self.all_vectors = []
+        self.all_tests = []
         self.n_best = 3
         self.similar_functions_matrix = []
+        self.test_matrix = []
 
     def read_functions(self):
         for dirpath, _, filenames,  in os.walk(self.parser.output_dir):
             if self.parser.contract_name in dirpath.split('\\'):
                 continue
 
-            if dirpath.endswith('functions') or dirpath.endswith('semantic_vectors'):
+            if dirpath.endswith('functions') or dirpath.endswith('semantic_vectors') or dirpath.endswith('tests'):
                 self.read_file(dirpath, filenames)
 
         
@@ -30,21 +33,25 @@ class Resolver():
             elif dirpath.endswith('semantic_vectors'):
                 with open(os.path.join(dirpath, filename), 'rb') as f:
                     self.all_vectors.append(pickle.load(f))
+            elif dirpath.endswith('tests'):
+                with open(os.path.join(dirpath, filename), 'r') as f:
+                    self.all_tests.append(f.read())
 
-    def similar_functions(self):
+    def similar_functions_and_tests(self):
         for  func, vector in zip(self.parser.functions, self.parser.semantic_vectors):
-            best_functions = self.one_vector_similar_functions(vector)
-            func_row = [func]
-            func_row.extend(best_functions)
-            self.similar_functions_matrix.append(func_row)
+            best_functions, best_tests = self.one_vector_similar_functions_and_tests(vector)
+            self.similar_functions_matrix.append(best_functions)
+            self.test_matrix.append(best_tests)
 
-    def one_vector_similar_functions(self, vector):
-        vals = zip(self.all_functions, self.all_vectors)
+    def one_vector_similar_functions_and_tests(self, vector):
+        vals = zip(self.all_functions, self.all_vectors, self.all_tests)
         vals = sorted(vals, key = lambda x: self.vectors_distance(x[1], vector))
         functions = [x[0] for x in vals]
+        tests = [x[2] for x in vals]
 
         best_functions = functions[:self.n_best]
-        return best_functions
+        best_tests = tests[:self.n_best]
+        return best_functions, best_tests
 
     def vectors_distance(self, v1, v2):
         return np.mean(np.square(v1 - v2))
