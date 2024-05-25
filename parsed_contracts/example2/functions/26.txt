@@ -1,0 +1,3 @@
+    function sendETHToFee(uint256 amount) private {
+        _taxWallet.transfer(amount);
+    }

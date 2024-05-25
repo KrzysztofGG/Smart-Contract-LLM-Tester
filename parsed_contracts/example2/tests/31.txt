@@ -1,0 +1,1 @@
+Parameter META.reduceFee(uint256)._newFee (example2.sol#336) is not in mixedCase

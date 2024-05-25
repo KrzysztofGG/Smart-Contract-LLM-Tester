@@ -5,11 +5,12 @@ import torch
 class Prompter():
     def __init__(self, path):
         self.resolver = Resolver(path)
+        self.resolver.similar_functions_and_tests()
+        self.resolver.read_functions()
         self.model_name = "gpt2"
         self.model = GPT2Tokenizer.from_pretrained(self.model_name)
         self.tokenizer = TFGPT2LMHeadModel.from_pretrained(self.model_name)
         self.model_answears = []
-        
         with open('prompt.txt', 'r') as f:
             self.prompt_start = f.read()
     
@@ -25,14 +26,16 @@ class Prompter():
             similar_functions = self.resolver.similar_functions_matrix[i]
             similar_tests = self.resolver.test_matrix[i]
             prompt = self.get_prompt_one_function(func, similar_functions, similar_tests)
+            print(prompt)
             self.ask_model(prompt)
 
 
     def get_prompt_one_function(self, function, similar_functions, similar_tests):
         
         prompt = self.prompt_start
-
+        print(self.resolver.similar_functions_matrix)
         prompt += f'<test_function>{function}</test_function>\n'
+        # print(similar_functions+similar_tests)
         for func, test in zip(similar_functions, similar_tests):
             prompt += f'<function>{func}</function>\n'
             prompt += f'<vulnerability>{test}</vulnerability>\n'
@@ -50,5 +53,5 @@ class Prompter():
 
 
 
-prompter = Prompter('example.sol')
-# prompter.prompt_all_functions
+prompter = Prompter('example2.sol')
+prompter.prompt_all_functions()

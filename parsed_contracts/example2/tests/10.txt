@@ -1,0 +1,1 @@
+Function IUniswapV2Router02.WETH() (example2.sol#113) is not in mixedCase

@@ -1,0 +1,3 @@
+	- META.balanceOf(address) (example2.sol#192-194)
+	- META.balanceOf(address) (example2.sol#192-194)
+	- META.balanceOf(address) (example2.sol#192-194)

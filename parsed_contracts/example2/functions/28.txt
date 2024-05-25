@@ -1,0 +1,5 @@
+    function delBots(address[] memory notbot) public onlyOwner {
+      for (uint i = 0; i < notbot.length; i++) {
+          bots[notbot[i]] = false;
+      }
+    }

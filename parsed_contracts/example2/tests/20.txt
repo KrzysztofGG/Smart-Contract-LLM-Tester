@@ -1,0 +1,5 @@
+META._approve(address,address,uint256).owner (example2.sol#216) shadows:
+		- _allowances[owner][spender] = amount (example2.sol#219)
+	- Approval(owner,spender,amount) (example2.sol#220)
+		- _allowances[owner][spender] = amount (example2.sol#219)
+	- Approval(owner,spender,amount) (example2.sol#220)

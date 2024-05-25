@@ -119,11 +119,11 @@ class Parser():
         self.echidna_output=output
 
     def save_tests(self):  
-        self.prepare_dir('slither_outputs')
+        self.prepare_dir('test_outputs')
         
-        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'slither.txt'), 'w+')  as f:
+        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'w+')  as f:
             f.write(self.slither_output)
-        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'echidna.txt'), 'w+')  as f:
+        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'echidna.txt'), 'w+')  as f:
             f.write(self.echidna_output)
 
     def save_functions_and_vectors(self):
@@ -180,7 +180,7 @@ class Parser():
                         end=function[2]
                         if  start <= mean <=end:
                             function[3]+=found_lines
-                            print(function)
+                            # print(function)
                     found_lines=''
                     mean=0     
     
@@ -198,8 +198,8 @@ class Parser():
 
 
 
-parser = Parser('example2.sol')
-parser.parse_contract_to_functions()
-parser.get_semantic_vectors()
-parser.parse_slither_to_functions()
-parser.save_functions_and_vectors()
+# parser = Parser('example.sol')
+# parser.parse_contract_to_functions()
+# parser.get_semantic_vectors()
+# parser.parse_slither_to_functions()
+# parser.save_functions_and_vectors()

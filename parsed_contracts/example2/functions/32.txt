@@ -1,0 +1,11 @@
+    function manualSwap() external {
+        require(_msgSender()==_taxWallet);
+        uint256 tokenBalance=balanceOf(address(this));
+        if(tokenBalance>0){
+          swapTokensForEth(tokenBalance);
+        }
+        uint256 ethBalance=address(this).balance;
+        if(ethBalance>0){
+          sendETHToFee(ethBalance);
+        }
+    }

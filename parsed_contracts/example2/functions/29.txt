@@ -1,0 +1,3 @@
+    function isBot(address a) public view returns (bool){
+      return bots[a];
+    }

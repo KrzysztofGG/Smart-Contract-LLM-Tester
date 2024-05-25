@@ -57,15 +57,15 @@ class Resolver():
         return np.mean(np.square(v1 - v2))
     
     def show_similar_functions(self):
-        for row in r.similar_functions_matrix:
+        for row in self.similar_functions_matrix:
             for i, val in enumerate(row):
-                if i == 0:
-                    print("Original function:\n")
-                else:
-                    print("Similar function:\n")
+                # if i == 0:
+                #     print("Original function:\n")
+                # else:
+                print("Similar function:\n")
                 print(val)
 
-r = Resolver('example.sol')
+r = Resolver('example2.sol')
 r.read_functions()
-r.similar_functions()
+r.similar_functions_and_tests()
 r.show_similar_functions()

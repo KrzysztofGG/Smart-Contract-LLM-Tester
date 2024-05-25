@@ -1,18 +1,10 @@
-39,55
-    function remove(Map storage map, address key) public {
-        if (!map.inserted[key]) {
-            return;
+    function set(Map storage map, address key, uint256 val) public {
+        if (map.inserted[key]) {
+            map.values[key] = val;
+        } else {
+            map.inserted[key] = true;
+            map.values[key] = val;
+            map.indexOf[key] = map.keys.length;
+            map.keys.push(key);
         }
-
-        delete map.inserted[key];
-        delete map.values[key];
-
-        uint256 index = map.indexOf[key];
-        address lastKey = map.keys[map.keys.length - 1];
-
-        map.indexOf[lastKey] = index;
-        delete map.indexOf[key];
-
-        map.keys[index] = lastKey;
-        map.keys.pop();
     }

@@ -1,0 +1,15 @@
+Reentrancy in META.openTrading() (example2.sol#324-333):
+	- uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(address(this),uniswapV2Router.WETH()) (example2.sol#328)
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	- IERC20(uniswapV2Pair).approve(address(uniswapV2Router),type()(uint256).max) (example2.sol#330)
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	- tradingOpen = true (example2.sol#332)
+	- META.openTrading() (example2.sol#324-333)
+META.openTrading() (example2.sol#324-333) ignores return value by uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+META.openTrading() (example2.sol#324-333) ignores return value by IERC20(uniswapV2Pair).approve(address(uniswapV2Router),type()(uint256).max) (example2.sol#330)
+Reentrancy in META.openTrading() (example2.sol#324-333):
+	- uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(address(this),uniswapV2Router.WETH()) (example2.sol#328)
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	- IERC20(uniswapV2Pair).approve(address(uniswapV2Router),type()(uint256).max) (example2.sol#330)
+	- uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp) (example2.sol#329)
+	- swapEnabled = true (example2.sol#331)

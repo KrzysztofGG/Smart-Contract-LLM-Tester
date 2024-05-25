@@ -1,0 +1,8 @@
+META.sendETHToFee(uint256) (example2.sol#304-306) sends eth to arbitrary user
+	- _taxWallet.transfer(amount) (example2.sol#305)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+		- _taxWallet.transfer(amount) (example2.sol#305)
+		- _taxWallet.transfer(amount) (example2.sol#305)

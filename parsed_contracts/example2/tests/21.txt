@@ -1,0 +1,33 @@
+Reentrancy in META._transfer(address,address,uint256) (example2.sol#223-272):
+	- swapTokensForEth(min(amount,min(contractTokenBalance,_maxTaxSwap))) (example2.sol#255)
+	- sendETHToFee(address(this).balance) (example2.sol#258)
+	- _balances[address(this)] = _balances[address(this)].add(taxAmount) (example2.sol#266)
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- _balances[from] = _balances[from].sub(amount) (example2.sol#269)
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- _balances[to] = _balances[to].add(amount.sub(taxAmount)) (example2.sol#270)
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- lastSellBlock = block.number (example2.sol#261)
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+	- sellCount ++ (example2.sol#260)
+	- META._transfer(address,address,uint256) (example2.sol#223-272)
+Reentrancy in META._transfer(address,address,uint256) (example2.sol#223-272):
+	- swapTokensForEth(min(amount,min(contractTokenBalance,_maxTaxSwap))) (example2.sol#255)
+	- sendETHToFee(address(this).balance) (example2.sol#258)
+	- Transfer(from,address(this),taxAmount) (example2.sol#267)
+	- Transfer(from,to,amount.sub(taxAmount)) (example2.sol#271)
+META._transfer(address,address,uint256) (example2.sol#223-272) has a high cyclomatic complexity (13).
+Reentrancy in META._transfer(address,address,uint256) (example2.sol#223-272):
+	- sendETHToFee(address(this).balance) (example2.sol#258)
+	- _balances[address(this)] = _balances[address(this)].add(taxAmount) (example2.sol#266)
+	- _balances[from] = _balances[from].sub(amount) (example2.sol#269)
+	- _balances[to] = _balances[to].add(amount.sub(taxAmount)) (example2.sol#270)
+	- lastSellBlock = block.number (example2.sol#261)
+	- sellCount ++ (example2.sol#260)
+	- Transfer(from,address(this),taxAmount) (example2.sol#267)
+	- Transfer(from,to,amount.sub(taxAmount)) (example2.sol#271)
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+META.slitherConstructorVariables() (example2.sol#124-357) uses literals with too many digits:
+META.slitherConstructorConstantVariables() (example2.sol#124-357) uses literals with too many digits:

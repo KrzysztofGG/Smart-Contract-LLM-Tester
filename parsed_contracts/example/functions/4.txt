@@ -1,21 +1,17 @@
-63,82
-    function testIterableMap() public {
-        map.set(address(0), 0);
-        map.set(address(1), 100);
-        map.set(address(2), 200); // insert
-        map.set(address(2), 200); // update
-        map.set(address(3), 300);
-
-        for (uint256 i = 0; i < map.size(); i++) {
-            address key = map.getKeyAtIndex(i);
-            assert(map.get(key) == i * 100);
+    function remove(Map storage map, address key) public {
+        if (!map.inserted[key]) {
+            return;
         }
 
-        map.remove(address(1));
+        delete map.inserted[key];
+        delete map.values[key];
 
-        // keys = [address(0), address(3), address(2)]
-        assert(map.size() == 3);
-        assert(map.getKeyAtIndex(0) == address(0));
-        assert(map.getKeyAtIndex(1) == address(3));
-        assert(map.getKeyAtIndex(2) == address(2));
+        uint256 index = map.indexOf[key];
+        address lastKey = map.keys[map.keys.length - 1];
+
+        map.indexOf[lastKey] = index;
+        delete map.indexOf[key];
+
+        map.keys[index] = lastKey;
+        map.keys.pop();
     }

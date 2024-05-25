@@ -1,0 +1,12 @@
+Reentrancy in META.transferFrom(address,address,uint256) (example2.sol#210-214):
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+	- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+Reentrancy in META.transferFrom(address,address,uint256) (example2.sol#210-214):
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+		- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+Reentrancy in META.transferFrom(address,address,uint256) (example2.sol#210-214):
+	- _transfer(sender,recipient,amount) (example2.sol#211)
+	- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)
+		- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (example2.sol#212)

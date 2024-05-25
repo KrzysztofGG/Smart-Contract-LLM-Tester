@@ -1,0 +1,7 @@
+'solc --version' running
+'solc example.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,C:\Users\Maciek\Desktop\Projekty Github\LLM_TESTER\Smart-Contract-LLM-Tester' running
+INFO:Detectors:
+Pragma version^0.8.12 (example.sol#2) allows old versions
+solc-0.8.12 is not recommended for deployment
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Slither:example.sol analyzed (2 contracts with 93 detectors), 2 result(s) found

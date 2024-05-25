@@ -1,0 +1,1 @@
+META.allowance(address,address).owner (example2.sol#201) shadows:

@@ -1,0 +1,2 @@
+	- Ownable.owner() (example2.sol#84-86) (function)
+	- Ownable.owner() (example2.sol#84-86) (function)

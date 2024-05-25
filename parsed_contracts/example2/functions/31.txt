@@ -1,0 +1,6 @@
+    function reduceFee(uint256 _newFee) external{
+      require(_msgSender()==_taxWallet);
+      require(_newFee<=_finalBuyTax && _newFee<=_finalSellTax);
+      _finalBuyTax=_newFee;
+      _finalSellTax=_newFee;
+    }

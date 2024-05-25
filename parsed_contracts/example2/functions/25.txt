@@ -1,0 +1,4 @@
+    function removeTransferTax() external onlyOwner{
+        _transferTax = 0;
+        emit TransferTaxUpdated(0);
+    }
