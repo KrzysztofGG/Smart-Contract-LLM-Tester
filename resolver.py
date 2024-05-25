@@ -42,7 +42,7 @@ class Resolver():
             best_functions, best_tests = self.one_vector_similar_functions_and_tests(vector)
             self.similar_functions_matrix.append(best_functions)
             self.test_matrix.append(best_tests)
-
+            
     def one_vector_similar_functions_and_tests(self, vector):
         vals = zip(self.all_functions, self.all_vectors, self.all_tests)
         vals = sorted(vals, key = lambda x: self.vectors_distance(x[1], vector))
@@ -69,3 +69,4 @@ class Resolver():
 # r.read_functions()
 # r.similar_functions_and_tests()
 # r.show_similar_functions()
+# print(r.similar_functions_matrix)
