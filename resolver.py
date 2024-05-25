@@ -20,13 +20,13 @@ class Resolver():
         for dirpath, _, filenames,  in os.walk(self.parser.output_dir):
             if self.parser.contract_name in dirpath.split('\\'):
                 continue
-
             if dirpath.endswith('functions') or dirpath.endswith('semantic_vectors') or dirpath.endswith('tests'):
                 self.read_file(dirpath, filenames)
 
         
     def read_file(self, dirpath, filenames):
         for filename in filenames:
+            
             if dirpath.endswith('functions'):
                 with open(os.path.join(dirpath, filename), 'r') as f:
                     self.all_functions.append(f.read())
@@ -65,7 +65,7 @@ class Resolver():
                 print("Similar function:\n")
                 print(val)
 
-r = Resolver('example2.sol')
-r.read_functions()
-r.similar_functions_and_tests()
-r.show_similar_functions()
+# r = Resolver('example.sol')
+# r.read_functions()
+# r.similar_functions_and_tests()
+# r.show_similar_functions()

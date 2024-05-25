@@ -7,16 +7,14 @@ class Prompter():
         self.resolver = Resolver(path)
         self.resolver.similar_functions_and_tests()
         self.resolver.read_functions()
-        self.model_name = "gpt2"
-        self.model = GPT2Tokenizer.from_pretrained(self.model_name)
-        self.tokenizer = TFGPT2LMHeadModel.from_pretrained(self.model_name)
-        self.model_answears = []
-        with open('prompt.txt', 'r') as f:
-            self.prompt_start = f.read()
+        # print(self.resolver.similar_functions_matrix)
+        # self.model_name = "gpt2"
+        # self.model = GPT2Tokenizer.from_pretrained(self.model_name)
+        # self.tokenizer = TFGPT2LMHeadModel.from_pretrained(self.model_name)
+        # self.model_answears = []
+        # with open('prompt.txt', 'r') as f:
+        #     self.prompt_start = f.read()
     
-
-
-
     def prompt_all_functions(self):
         for i, func in enumerate(self.resolver.parser.functions):
 
@@ -26,7 +24,7 @@ class Prompter():
             similar_functions = self.resolver.similar_functions_matrix[i]
             similar_tests = self.resolver.test_matrix[i]
             prompt = self.get_prompt_one_function(func, similar_functions, similar_tests)
-            print(prompt)
+            # print(prompt)
             self.ask_model(prompt)
 
 

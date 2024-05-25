@@ -119,11 +119,11 @@ class Parser():
         self.echidna_output=output
 
     def save_tests(self):  
-        self.prepare_dir('test_outputs')
+        self.prepare_dir('slither_outputs')
         
-        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'w+')  as f:
+        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'slither.txt'), 'w+')  as f:
             f.write(self.slither_output)
-        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'echidna.txt'), 'w+')  as f:
+        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'echidna.txt'), 'w+')  as f:
             f.write(self.echidna_output)
 
     def save_functions_and_vectors(self):
@@ -139,9 +139,11 @@ class Parser():
 
             with open(os.path.join(self.output_dir, self.contract_name, 'semantic_vectors', f'{i}.pkl'), 'wb+') as f:
                 pickle.dump(vec, f)
-            if fun[3]!='':
-                with open(os.path.join(self.output_dir, self.contract_name, 'tests', f'{i}.txt'), 'w+')  as f:
+            with open(os.path.join(self.output_dir, self.contract_name, 'tests', f'{i}.txt'), 'w+')  as f:
+                if fun[3]!='':
                     f.write(fun[3])
+                else:
+                    f.write("This function is OK")
     def parse_slither_to_functions(self):
         self.get_slither_tests()
         self.save_tests()
@@ -198,7 +200,7 @@ class Parser():
 
 
 
-# parser = Parser('example.sol')
+# parser = Parser('example2.sol')
 # parser.parse_contract_to_functions()
 # parser.get_semantic_vectors()
 # parser.parse_slither_to_functions()
