@@ -23,6 +23,8 @@ class Parser():
         self.contract_name = path[:-4]
         self.slither_output=""
         self.echidna_output=""
+        self.tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
+        self.model = AutoModel.from_pretrained("microsoft/codebert-base")
 
     def parse_contract_to_functions(self):
         logging.info(f'Parsing contract {self.contract_name} to functions')
@@ -73,20 +75,20 @@ class Parser():
 
     def get_semantic_vectors(self):
         logging.info(f'Creating semantic vectors for contract {self.contract_name}')
-        tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
-        model = AutoModel.from_pretrained("microsoft/codebert-base")
+        # tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
+        # model = AutoModel.from_pretrained("microsoft/codebert-base")
 
         for input_text in self.functions:
-            self.get_vector_from_input(tokenizer, model, input_text[0])
+            self.get_vector_from_input(input_text[0])
 
         self.semantic_vectors_whitening()
         # self.save_functions_and_vectors()
 
-    def get_vector_from_input(self, tokenizer, model, input_text):
-        input_ids = tokenizer.encode(input_text, return_tensors="pt", 
+    def get_vector_from_input(self, input_text):
+        input_ids = self.tokenizer.encode(input_text, return_tensors="pt", 
                                      max_length=512, truncation=True)
         with torch.no_grad():
-            outputs = model(input_ids)
+            outputs = self.model(input_ids)
             semantic_vector = outputs.last_hidden_state.mean(dim=1) 
             self.semantic_vectors.append(semantic_vector.squeeze().numpy())
 
@@ -182,7 +184,6 @@ class Parser():
                         end=function[2]
                         if  start <= mean <=end:
                             function[3]+=found_lines
-                            # print(function)
                     found_lines=''
                     mean=0     
     
@@ -200,7 +201,7 @@ class Parser():
 
 
 
-# parser = Parser('example2.sol')
+# parser = Parser('example.sol')
 # parser.parse_contract_to_functions()
 # parser.get_semantic_vectors()
 # parser.parse_slither_to_functions()

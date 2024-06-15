@@ -38,7 +38,7 @@ class Resolver():
                     self.all_tests.append(f.read())
 
     def similar_functions_and_tests(self):
-        for  func, vector in zip(self.parser.functions, self.parser.semantic_vectors):
+        for vector in self.parser.semantic_vectors:
             best_functions, best_tests = self.one_vector_similar_functions_and_tests(vector)
             self.similar_functions_matrix.append(best_functions)
             self.test_matrix.append(best_tests)
@@ -51,22 +51,24 @@ class Resolver():
 
         best_functions = functions[:self.n_best]
         best_tests = tests[:self.n_best]
+        print(len(best_functions))
         return best_functions, best_tests
 
     def vectors_distance(self, v1, v2):
         return np.mean(np.square(v1 - v2))
     
     def show_similar_functions(self):
-        for row in self.similar_functions_matrix:
-            for i, val in enumerate(row):
-                # if i == 0:
-                #     print("Original function:\n")
-                # else:
+        for i, orig_func in enumerate(self.parser.functions):
+            orig_func = orig_func[0]
+            print("Original function:\n")
+            print(orig_func)
+            for similar_func in self.similar_functions_matrix[i]:
                 print("Similar function:\n")
-                print(val)
+                print(similar_func)
 
-# r = Resolver('example.sol')
-# r.read_functions()
-# r.similar_functions_and_tests()
-# r.show_similar_functions()
+
+r = Resolver('example.sol')
+r.read_functions()
+r.similar_functions_and_tests()
+r.show_similar_functions()
 # print(r.similar_functions_matrix)
