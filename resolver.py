@@ -51,7 +51,6 @@ class Resolver():
 
         best_functions = functions[:self.n_best]
         best_tests = tests[:self.n_best]
-        print(len(best_functions))
         return best_functions, best_tests
 
     def vectors_distance(self, v1, v2):
@@ -67,8 +66,8 @@ class Resolver():
                 print(similar_func)
 
 
-r = Resolver('example.sol')
-r.read_functions()
-r.similar_functions_and_tests()
-r.show_similar_functions()
+# r = Resolver('example.sol')
+# r.read_functions()
+# r.similar_functions_and_tests()
+# r.show_similar_functions()
 # print(r.similar_functions_matrix)

@@ -20,7 +20,8 @@ class Parser():
         self.functions = []
         self.semantic_vectors = []
         self.output_dir = 'parsed_contracts'
-        self.contract_name = path[:-4]
+        index = path.index('/') + 1
+        self.contract_name = path[index:-4]
         self.slither_output=""
         self.echidna_output=""
         self.tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
@@ -154,7 +155,7 @@ class Parser():
         mean=0
 
 
-        with open(os.path.join(self.output_dir, self.contract_name, 'test_outputs', 'slither.txt'), 'r+')  as file:
+        with open(os.path.join(self.output_dir, self.contract_name, 'slither_outputs', 'slither.txt'), 'r+')  as file:
             for line in file:
                 function_match = re.match(r'.*\((' + re.escape(self.contract_name+".sol") + r'#.*?)\)', line)
 
@@ -199,9 +200,7 @@ class Parser():
                 except Exception as e:
                     print(f"Failed to delete {file_path}: {e}")
 
-
-
-# parser = Parser('example.sol')
+# parser = Parser('contracts/contract2.sol')
 # parser.parse_contract_to_functions()
 # parser.get_semantic_vectors()
 # parser.parse_slither_to_functions()

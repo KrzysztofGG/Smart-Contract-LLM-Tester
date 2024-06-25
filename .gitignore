@@ -1,4 +1,5 @@
 parsed_contracts\
-
+*.txt
+*.pkl
 
 ./crytic-export
